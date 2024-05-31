@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Words Calculator</string>
+    <string name="instructions">Instructions: \n\n1. Click on the first input field to enter the first word.\n2. Click on the second input field to enter the second word.\n3. Use the keyboard buttons to enter letters.\n4. Click "Add Words" to add the words.\n5. Click "Clear" to reset the inputs.</string>
+</resources>

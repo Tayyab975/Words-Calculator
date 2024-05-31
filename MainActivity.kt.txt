@@ -1,0 +1,87 @@
+package com.example.wordscalculator
+
+import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.GridLayout
+import android.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+
+class MainActivity : AppCompatActivity() {
+    private lateinit var wordInput1: EditText
+    private lateinit var wordInput2: EditText
+    private lateinit var resultText: TextView
+    private var isFirstInputActive = true
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        wordInput1 = findViewById(R.id.wordInput1)
+        wordInput2 = findViewById(R.id.wordInput2)
+        val addButton = findViewById<Button>(R.id.addButton)
+        val clearButton = findViewById<Button>(R.id.clearButton)
+        resultText = findViewById(R.id.resultText)
+        val keyboard = findViewById<GridLayout>(R.id.keyboard)
+        val instructionsButton = findViewById<Button>(R.id.instructionsButton)
+
+        // Show instructions dialog when the app is created
+        showInstructionsDialog()
+
+        // Set listeners for input fields to switch focus
+        wordInput1.setOnClickListener { isFirstInputActive = true }
+        wordInput2.setOnClickListener { isFirstInputActive = false }
+
+        // Set listeners for letter buttons
+        for (i in 0 until keyboard.childCount) {
+            val button = keyboard.getChildAt(i) as Button
+            button.setOnClickListener { onLetterButtonClick(button.text.toString()) }
+        }
+
+        addButton.setOnClickListener {
+            val word1 = wordInput1.text.toString()
+            val word2 = wordInput2.text.toString()
+            val result = addWords(word1, word2)
+            resultText.text = result
+        }
+
+        clearButton.setOnClickListener {
+            clearInputs()
+        }
+
+        instructionsButton.setOnClickListener {
+            showInstructionsDialog()
+        }
+    }
+
+    private fun showInstructionsDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Instructions")
+        builder.setMessage(getString(R.string.instructions))
+        builder.setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+        builder.create().show()
+    }
+
+    private fun onLetterButtonClick(letter: String) {
+        if (isFirstInputActive) {
+            wordInput1.append(letter)
+        } else {
+            wordInput2.append(letter)
+        }
+    }
+
+    private fun addWords(word1: String, word2: String): String {
+        return if (word1.any { it.isDigit() } || word2.any { it.isDigit() }) {
+            "Error: Inputs must not contain numbers"
+        } else {
+            "$word1 $word2"  // Adding a space between the two words
+        }
+    }
+
+    private fun clearInputs() {
+        wordInput1.text.clear()
+        wordInput2.text.clear()
+        resultText.text = ""
+    }
+}
